@@ -1,4 +1,4 @@
-package eu.codedsakura.mods;
+package com.tpaandhomes.mods;
 
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;

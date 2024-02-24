@@ -1,4 +1,4 @@
-package eu.codedsakura.mods;
+package com.tpaandhomes.mods;
 
 import net.minecraft.entity.boss.BossBar;
 import net.minecraft.entity.boss.CommandBossBar;

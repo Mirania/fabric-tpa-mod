@@ -1,4 +1,4 @@
-package eu.codedsakura.mods;
+package com.tpaandhomes.mods;
 
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.BoolArgumentType;
@@ -68,19 +68,19 @@ public class ConfigUtils {
                 literal(commandName).requires(requirement)
                         .executes(ctx -> {
                             values.stream().filter(v -> v.command != null).forEach(value ->
-                                    ctx.getSource().sendFeedback(Text.translatable(value.command.getterText, value.value), false));
+                                    ctx.getSource().sendFeedback(() -> Text.translatable(value.command.getterText, value.value), false));
                             return 1;
                         });
         values.stream().filter(v -> v.command != null).forEach(value ->
                 out.then(literal(value.name)
                         .executes(ctx -> {
-                            ctx.getSource().sendFeedback(Text.translatable(value.command.getterText, value.value), false);
+                            ctx.getSource().sendFeedback(() -> Text.translatable(value.command.getterText, value.value), false);
                             return 1;
                         })
                         .then(argument(value.name, value.getArgumentType()).suggests(value.suggestions)
                                 .executes(ctx -> {
                                     value.value = value.parseArgumentValue(ctx);
-                                    ((CommandContext<ServerCommandSource>) ctx).getSource().sendFeedback(Text.translatable(value.command.setterText, value.value), true);
+                                    ((CommandContext<ServerCommandSource>) ctx).getSource().sendFeedback(() -> Text.translatable(value.command.setterText, value.value), true);
                                     this.save();
                                     return 1;
                                 }))));
