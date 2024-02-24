@@ -40,7 +40,7 @@ public class HomeUtils {
             final var json = Files.readString(this.path);
             this.homes = this.gson.fromJson(json, new TypeToken<Map<String, List<HomeLocation>>>() {}.getType());
         } catch (IOException e) {
-            this.logger.fatal("Failed to load homes file!");
+            this.logger.error("Failed to load homes file!");
             this.homes = new HashMap<>();
         }
     }
@@ -50,7 +50,7 @@ public class HomeUtils {
             final var json = this.gson.toJson(homes);
             Files.writeString(this.path, json);
         } catch (IOException e) {
-            this.logger.fatal("Failed to save data to homes file!");
+            this.logger.error("Failed to save data to homes file!");
         }
     }
 
@@ -71,7 +71,7 @@ public class HomeUtils {
         final var homes = this.getHomes(player, isGlobal);
 
         final HomeLocation newHome = new HomeLocation();
-        newHome.name = name.toLowerCase();
+        newHome.name = name;
         newHome.dimension = player.getServerWorld().getRegistryKey().getValue().getPath();
         newHome.x = player.getX();
         newHome.y = player.getY();

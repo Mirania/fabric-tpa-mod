@@ -184,7 +184,7 @@ public class FabricTPA implements ModInitializer {
         final List<HomeUtils.HomeLocation> homeList = this.homes.getHomes(player, isGlobal);
         final int maxHomes = (int) this.config.getValue("homes");
 
-        homeList.removeIf(home -> home.name.equals(name.toLowerCase()));
+        homeList.removeIf(home -> home.name.toLowerCase().equals(name.toLowerCase()));
 
         if (!isGlobal && homeList.size() >= maxHomes) {
             player.sendMessage(Text.literal("Can't set more homes! The limit is %d.".formatted(maxHomes)).formatted(Formatting.RED), false);
@@ -205,7 +205,7 @@ public class FabricTPA implements ModInitializer {
         final ServerPlayerEntity player = ctx.getSource().getPlayer();
         final List<HomeUtils.HomeLocation> homeList = this.homes.getHomes(player, isGlobal);
 
-        homeList.removeIf(home -> home.name.equals(name.toLowerCase()));
+        homeList.removeIf(home -> home.name.toLowerCase().equals(name.toLowerCase()));
         this.homes.save();
 
         player.sendMessage(Text.literal("Deleted the %s named '".formatted(isGlobal ? "global warp" : "home")).formatted(Formatting.DARK_GREEN)
@@ -225,6 +225,10 @@ public class FabricTPA implements ModInitializer {
             return 1;
         }
 
+        player.sendMessage(Text.literal(isGlobal ?
+                "▶ The global warps. You can click them to tp there. ◀" :
+                "▶ Your homes. You can click them to tp there. ◀").formatted(Formatting.DARK_GREEN), false);
+
         for (int i = 0; i < homes.size(); i++) {
             final HomeUtils.HomeLocation home = homes.get(i);
 
@@ -234,16 +238,20 @@ public class FabricTPA implements ModInitializer {
                                     "Aether";
 
             final MutableText homeTitle = isGlobal ?
-                    Text.literal("Warp #%d '".formatted(i + 1)) :
+                    Text.literal("Warp '") :
                     Text.literal("Home #%d/%d '".formatted(i + 1, maxHomes));
+
+            final MutableText tooltip = Text.literal("Click to teleport to '")
+                    .append(Text.literal(home.name).formatted(Formatting.GOLD))
+                    .append("'!");
 
             player.sendMessage(homeTitle.formatted(Formatting.DARK_GREEN)
                             .append(Text.literal(home.name).formatted(Formatting.GOLD))
-                            .append(Text.literal("' - ").formatted(Formatting.DARK_GREEN))
+                            .append(Text.literal("' • ").formatted(Formatting.DARK_GREEN))
                             .append(Text.literal(dimensionName).formatted(Formatting.GOLD))
-                            .append(Text.literal("(x=%.0f, y=%.0f, z=%.0f)".formatted(home.x, home.y, home.z)).formatted(Formatting.DARK_GREEN))
+                            .append(Text.literal(" (x=%.0f, y=%.0f, z=%.0f)".formatted(home.x, home.y, home.z)).formatted(Formatting.DARK_GREEN))
                             .styled(s -> s.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/%s tp %s".formatted(isGlobal ? "warp" : "home", home.name)))
-                                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Click to teleport here!")))),
+                                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip))),
                     false);
         }
 
